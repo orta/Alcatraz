@@ -23,7 +23,7 @@
 
 #import <AppKit/AppKit.h>
 
-@class ATZInstallButton;
+@class ATZInstallButton, ATZPackage;
 
 @interface ATZPackageTableCellView : NSTableCellView
 
@@ -38,6 +38,7 @@
 @property (assign) IBOutlet NSLayoutConstraint *screenshotButtonHeightConstraint;
 @property (assign) IBOutlet NSLayoutConstraint *screenshotButtonHorizontalPaddingConstraint;
 
+- (void)updateWithPackage:(ATZPackage *)package;
 - (void)setScreenshotImage:(NSImage *)image isLoading:(BOOL)isLoading animated:(BOOL)animated;
 
 @end

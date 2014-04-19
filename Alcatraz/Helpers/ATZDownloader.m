@@ -62,11 +62,15 @@ static NSString *const COMPLETION = @"completion";
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:remotePath]];
     NSURLSessionTask *task = [[self urlSession] downloadTaskWithRequest:request];
     
-    self.callbacks[task] = @{
-        PROGRESS:   [progress copy],
+    NSMutableDictionary *dictionary = [@{
         COMPLETION: [completion copy]
-    };
+    } mutableCopy];
     
+    if (progress){
+        dictionary[PROGRESS] = [progress copy];
+    }
+    
+    self.callbacks[task] = dictionary;
     [task resume];
 }
 
@@ -86,8 +90,10 @@ static NSString *const COMPLETION = @"completion";
 
     CGFloat progress = (CGFloat)totalBytesWritten / (CGFloat)totalBytesExpectedToWrite;
 
-    ATZDownloadProgress progressBlock =  self.callbacks[downloadTask][PROGRESS];
-    progressBlock(progress);
+    ATZDownloadProgress progressBlock = self.callbacks[downloadTask][PROGRESS];
+    if (progressBlock) {
+        progressBlock(progress);
+    }
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes {}

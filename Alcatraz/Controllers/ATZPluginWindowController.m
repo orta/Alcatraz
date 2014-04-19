@@ -146,29 +146,8 @@ static NSString *const SEARCH_AND_CLASS_PREDICATE_FORMAT = @"(name contains[cd] 
 {
     ATZPackageTableCellView *cell = [tableView makeViewWithIdentifier:[tableColumn identifier] owner:[tableView delegate]];
     ATZPackage *package = [self.packages filteredArrayUsingPredicate:self.filterPredicate][row];
-
-    NSString *websiteButtonTitle = [NSString stringWithFormat:@"%@ / %@", package.username, package.repository];
-
-    [cell.installButton setButtonState:package.isInstalled ? AZTInstallButtonStateInstalled : AZTInstallButtonStateNotInstalled];
-    [cell.websiteButton setTitle:websiteButtonTitle];
-    [cell.websiteButton setToolTip:package.website];
-
-    [cell.typeImageView setImage:[[NSBundle bundleForClass:[self class]] imageForResource:package.iconName]];
-
-    NSString *previewImagePath = package.iconPath ?: package.screenshotPath;
-
-    if ([previewImagePath length] > 0) {
-        [cell setScreenshotImage:nil isLoading:YES animated:YES];
-
-        [self retrieveImageViewForScreenshot:previewImagePath progress:nil completion:^(NSImage *screenshotImage) {
-            if ([cell.objectValue isEqualTo:package]) {
-                [cell setScreenshotImage:screenshotImage isLoading:NO animated:YES];
-            }
-        }];
-    } else {
-        [cell setScreenshotImage:nil isLoading:NO animated:NO];
-    }
-
+    
+    [cell updateWithPackage:package];
     return cell;
 }
 
@@ -229,6 +208,9 @@ static NSString *const SEARCH_AND_CLASS_PREDICATE_FORMAT = @"(name contains[cd] 
 - (void)removePackage:(ATZPackage *)package andUpdateControl:(ATZInstallButton *)control {
     [control setProgress:0.f animated:YES];
     [package removeWithCompletion:^(NSError *failure) {
+        ATZPackageTableCellView *cell = (id)[control superview];
+        [cell updateWithPackage:package];
+
         [control setButtonState:AZTInstallButtonStateNotInstalled animated:YES];
     }];
 }
@@ -239,16 +221,20 @@ static NSString *const SEARCH_AND_CLASS_PREDICATE_FORMAT = @"(name contains[cd] 
     [package installWithProgress:^(NSString *progressMessage, CGFloat progress) {
         [control setProgress:progress animated:YES];
     } completion:^(NSError *failure) {
+
+        ATZPackageTableCellView *cell = (id)[control superview];
+        [cell updateWithPackage:package];
+
         [control setProgress:failure ? 0.f : 1.f animated:YES];
         [control setButtonState:failure ? AZTInstallButtonStateError : AZTInstallButtonStateInstalled animated:YES];
 
         if (package.requiresRestart) {
-            [self postNotificationForInstalledPackage:package];
+            [self postNeedsRestartNotificationForInstalledPackage:package];
         }
     }];
 }
 
-- (void)postNotificationForInstalledPackage:(ATZPackage *)package {
+- (void)postNeedsRestartNotificationForInstalledPackage:(ATZPackage *)package {
     if (![NSUserNotificationCenter class] || !package.isInstalled) return;
     
     NSUserNotification *notification = [NSUserNotification new];
@@ -316,13 +302,16 @@ BOOL hasPressedCommandF(NSEvent *event) {
     [self.previewPanel orderFront:self];
 
     self.previewPanel.title = title;
-    [self retrieveImageViewForScreenshot:screenshotPath progress:nil completion:^(NSImage *image) {
+    
+    ATZDownloader *downloader = [ATZDownloader new];
+    [downloader downloadFileFromPath:screenshotPath progress:nil completion:^(NSData *data, NSError *error) {
+
+        NSImage *image = [[NSImage alloc] initWithData:data];
         self.previewImageView.image = image;
         [self.previewPanel layoutIfNeeded];
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             context.duration = 0.25f;
             context.allowsImplicitAnimation = YES;
-
 
             [self.previewPanel.animator setAlphaValue:1.f];
             [self.previewPanel.animator center];
@@ -331,25 +320,6 @@ BOOL hasPressedCommandF(NSEvent *event) {
             [self.previewPanel makeKeyAndOrderFront:self];
         }];
     }];
-}
-
-- (void)retrieveImageViewForScreenshot:(NSString *)screenshotPath progress:(void (^)(CGFloat))downloadProgress completion:(void (^)(NSImage *))completion {
-    
-    ATZDownloader *downloader = [ATZDownloader new];
-    [downloader downloadFileFromPath:screenshotPath
-                            progress:^(CGFloat progress) {
-                                if (downloadProgress) {
-                                    downloadProgress(progress);
-                                }
-                            }
-                          completion:^(NSData *responseData, NSError *error) {
-                              NSImage *image = [[NSImage alloc] initWithData:responseData];
-
-                              if (completion) {
-                                  completion(image);
-                              }
-                          }];
-    
 }
 
 - (void)addVersionToWindow {

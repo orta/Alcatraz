@@ -27,6 +27,7 @@
 
 #import "ATZInstallButton.h"
 #import "ATZPaddedImageButtonCell.h"
+#import "ATZDownloader.h"
 
 // Frameworks
 #import <QuartzCore/QuartzCore.h>
@@ -45,6 +46,38 @@
 
     ATZPaddedImageButtonCell *websiteButtonCell = (ATZPaddedImageButtonCell *)[self.websiteButton cell];
     websiteButtonCell.spacingBetweenImageAndText = 3.f; // Plus the original 2 offset, and somehow we're at 7 pixels?! Oh AppKit!
+}
+
+- (void)updateWithPackage:(ATZPackage *)package
+{
+    NSString *websiteButtonTitle = [NSString stringWithFormat:@"%@ / %@", package.username, package.repository];
+    
+    [self.installButton setButtonState:package.isInstalled ? AZTInstallButtonStateInstalled : AZTInstallButtonStateNotInstalled];
+    [self.websiteButton setTitle:websiteButtonTitle];
+    [self.websiteButton setToolTip:package.website];
+    
+    NSString *iconName = package.isInstalled ? [package.iconName stringByAppendingString:@"_selected"] : package.iconName;
+    NSImage *icon = [[NSBundle bundleForClass:[self class]] imageForResource:iconName];
+    [self.typeImageView setImage:icon];
+    self.typeImageView.alphaValue = package.isInstalled ? 1 : 0.5;
+    
+    NSString *previewImagePath = package.iconPath ?: package.screenshotPath;
+    if ([previewImagePath length] > 0) {
+        [self setScreenshotImage:nil isLoading:YES animated:YES];
+        
+        ATZDownloader *downloader = [ATZDownloader new];
+        [downloader downloadFileFromPath:package.screenshotPath progress:nil completion:^(NSData *data, NSError *error) {
+            
+            NSImage *image = [[NSImage alloc] initWithData:data];
+            if ([self.objectValue isEqualTo:package]) {
+                [self setScreenshotImage:image isLoading:NO animated:YES];
+            }
+        }];
+        
+    } else {
+        [self setScreenshotImage:nil isLoading:NO animated:NO];
+    }
+
 }
 
 - (void)setScreenshotImage:(NSImage *)image isLoading:(BOOL)isLoading animated:(BOOL)animated

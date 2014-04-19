@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13D28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="1080" defaultVersion="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ATZPluginWindowController">
@@ -99,8 +99,8 @@
                                                                 <action selector="displayScreenshotPressed:" target="-2" id="Ytn-5m-MnL"/>
                                                             </connections>
                                                         </button>
-                                                        <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="q0w-lL-ZXE" customClass="ATZInstallButton">
-                                                            <rect key="frame" x="44" y="23" width="64" height="19"/>
+                                                        <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q0w-lL-ZXE" customClass="ATZInstallButton">
+                                                            <rect key="frame" x="44" y="13" width="64" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="64" id="JVd-oT-Icn"/>
@@ -113,8 +113,8 @@
                                                                 <action selector="performPackageActivity:" target="-2" id="86K-6x-B9W"/>
                                                             </connections>
                                                         </button>
-                                                        <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-e0-VwE">
-                                                            <rect key="frame" x="124" y="23" width="138" height="19"/>
+                                                        <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CQF-e0-VwE">
+                                                            <rect key="frame" x="124" y="13" width="138" height="19"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <buttonCell key="cell" type="roundRect" title="username / repository" bezelStyle="roundedRect" image="github_logo" imagePosition="left" alignment="left" imageScaling="proportionallyDown" inset="2" id="UJa-zN-ZUr" customClass="ATZPaddedImageButtonCell">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

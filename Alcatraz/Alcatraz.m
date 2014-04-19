@@ -65,6 +65,8 @@ static Alcatraz *sharedPlugin;
     pluginManagerItem.target = self;
     [windowMenuItem.submenu insertItem:pluginManagerItem
                                atIndex:[windowMenuItem.submenu indexOfItemWithTitle:@"Organizer"] + 1];
+    
+    [self loadWindowAndPutInFront];
 }
 
 - (void)checkForCMDLineToolsAndOpenWindow {
