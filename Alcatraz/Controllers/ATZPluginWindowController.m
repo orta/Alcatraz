@@ -274,11 +274,15 @@ BOOL hasPressedCommandF(NSEvent *event) {
 - (void)reloadPackages {
     ATZDownloader *downloader = [ATZDownloader new];
     [downloader downloadPackageListWithCompletion:^(NSDictionary *packageList, NSError *error) {
-        
         if (error) {
             NSLog(@"Error while downloading packages! %@", error);
         } else {
-            self.packages = [ATZPackageFactory createPackagesFromDicts:packageList];
+            NSArray *unorderedPackages = [ATZPackageFactory createPackagesFromDicts:packageList];
+
+            NSSortDescriptor *isInstalledDescriptor = [[NSSortDescriptor alloc] initWithKey:@"isInstalled" ascending:NO];
+            NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+            
+            self.packages = [unorderedPackages sortedArrayUsingDescriptors:@[isInstalledDescriptor, nameDescriptor]];
             [self updatePackages];
         }
     }];
@@ -298,6 +302,8 @@ BOOL hasPressedCommandF(NSEvent *event) {
 
     [self.previewPanel setAlphaValue:0.f];
     NSRect buttonFrameOnScreen = [self.window convertRectToScreen:[sender frame]];
+    buttonFrameOnScreen.origin.y -= self.tableView.enclosingScrollView.documentVisibleRect.origin.y;
+
     [self.previewPanel setFrame:buttonFrameOnScreen display:YES animate:NO];
     [self.previewPanel orderFront:self];
 
