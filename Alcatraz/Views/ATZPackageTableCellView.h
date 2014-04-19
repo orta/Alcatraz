@@ -39,6 +39,5 @@
 @property (assign) IBOutlet NSLayoutConstraint *screenshotButtonHorizontalPaddingConstraint;
 
 - (void)updateWithPackage:(ATZPackage *)package;
-- (void)setScreenshotImage:(NSImage *)image isLoading:(BOOL)isLoading animated:(BOOL)animated;
 
 @end

@@ -339,4 +339,10 @@ BOOL hasPressedCommandF(NSEvent *event) {
     [windowFrameView addSubview:label];
 }
 
+- (NSSize)windowWillResize:(NSWindow *)window toSize:(NSSize)proposedFrameSize {
+    proposedFrameSize.width = window.frame.size.width;
+    return proposedFrameSize;
+}
+
+
 @end
