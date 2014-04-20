@@ -5,14 +5,16 @@ Alcatraz is an open-source package manager for Xcode 5. It lets you discover and
 [![Stories in Ready](https://badge.waffle.io/supermarin/Alcatraz.png?label=ready)](https://waffle.io/supermarin/Alcatraz)
 [![Build Status](https://travis-ci.org/supermarin/Alcatraz.png?branch=master)](https://travis-ci.org/supermarin/Alcatraz)
 [![Alcatraz chat](https://badges.gitter.im/supermarin/alcatraz.png)](https://gitter.im/supermarin/alcatraz)
-![Package Manager UI](http://alcatraz.io/images/screenshot@2x.png)
+![Package Manager UI](https://github.com/orta/Alcatraz/raw/master/assets/screenshot.png)
+
+This is a fork with design tweaks from this [PR](https://github.com/supermarin/Alcatraz/pull/154) with the addition of installed Packages at the top.
 
 ## Installation
 
 To install, open up your terminal and paste this:
 
 ``` bash
-curl -fsSL https://raw.github.com/supermarin/Alcatraz/master/Scripts/install.sh | sh
+curl -fsSL https://raw.github.com/orta/Alcatraz/master/Scripts/install.sh | sh
 ```
 or download the repository from Github and build it in Xcode. You'll need to restart Xcode after the installation.
 
